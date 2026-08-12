@@ -1,0 +1,47 @@
+import requests
+from bs4 import BeautifulSoup
+import json
+
+def parse_quotes():
+    url = 'https://quotes.toscrape.com/'
+    quotes_data = []
+    page = 1
+
+    while True:
+        print(f"Парсинг страницы {page}...")
+        response = requests.get(f"{url}/page/{page}/")
+
+        if response.status_code != 200:
+            print(f"страница {page} не найдена. Завершаем парсинг.")
+            break
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        quptes = soup.find_all("div", class_="quote")
+
+        if not quptes:
+            break
+
+        for quote in quptes:
+            text = quote.find("span", class_="text").text
+
+            author = quote.find("small", class_="author").text
+
+            tags = [tag.text for tag in quote.find_all("a", class_="tag")]
+
+            quotes_data.append({
+                'text': text,
+                'author': author,
+                'tags': tags
+            })
+
+        page += 1
+
+    return quotes_data
+
+def save_to_json(data, filename="quotes.json"):
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"Данные сохранены в {filename}")
+data = parse_quotes()
+save_to_json(data)
