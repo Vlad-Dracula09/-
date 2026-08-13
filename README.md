@@ -23,7 +23,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/yourusername/quote-parser.git
+git clone https://github.com/Vlad-Dracula09/-.git
 cd quote-parser
 ```
 
